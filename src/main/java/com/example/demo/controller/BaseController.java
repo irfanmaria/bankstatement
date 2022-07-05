@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ public abstract class BaseController<T> {
 	
 	
 	@PostMapping("/ReadRecord")
+	@PreAuthorize("hasRole('ADMIN')")
 	public T insertion(@Valid @RequestBody T t)
 	{
 		
@@ -34,24 +36,27 @@ public abstract class BaseController<T> {
 	}
 	
 	@GetMapping("/fetchRecord")
+	@PreAuthorize("hasRole('USER')")
 	public List<T> getAllRecord()
 	{
 		return service.getAll();
 	}
 	
 	@DeleteMapping("/record/{id}")
-	
+	@PreAuthorize("hasRole('ADMIN')")
 	public void DeleteRecord(@PathVariable("id") int id)
 	{
 		service.delete(id);
 	}
 	
 	@PutMapping("/updateRecord")
+	//@PreAuthorize("hasRole('USER')")
 	public T updateRecord(@RequestBody T t)
 	{
 		return service.update(t);
 	}
 	@GetMapping("/record/{id}")
+	@PreAuthorize("hasRole('USER')")
 	public Optional<T> getThrougID(@PathVariable("id") int id)
 	{
 		return service.getById(id);
